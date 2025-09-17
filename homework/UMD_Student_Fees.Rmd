@@ -35,12 +35,9 @@ umd_fees_pct <- umd_fees |> mutate(pct_change = (fall_2024- fall_2021)/fall_2021
 ### Task 4: Calculate the mean and median fees for Fall 2024 using `mutate()`
 
 ```{r}
-
-umd_fees |> 
-    summarize(mean_2024_fees = mean(fall_2024),
-            median_2024_fees = median(fall_2024)
-)
-
+ pg_crime_averages <- pg_crime |> 
+  mutate(total_incidents = `Jan`+`Feb`+ `Mar`+`Apr`+`May`+`Jun`+`Jul`+`Aug` +`Sep`+`Oct`+`Nov`+`Dec`) |>
+  mutate(average_incidents = total_incidents/12)
 
 ```
 
