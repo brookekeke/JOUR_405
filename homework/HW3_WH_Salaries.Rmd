@@ -25,8 +25,7 @@ wh_salaries <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/
 
 You should examine that dataframe carefully by clicking on it in the Environment tab in RStudio. Write a couple of sentences describing the categories of incidents. From a reporting standpoint, what stands out to you about this data? Are there any salary values that will cause problems for analysis?
 
-ANSWER HERE
-The salary values that are 0 could cause problems for my analysis because they are outliers.
+Titles that I would have assumed to be well paid are actually unpaid. I would like to do further research to identify if this is actually the case or if they get compensated some other way. The salary values that are 0 and above 250,000 could cause problems for my analysis because they are outliers.
 
 ### Task 4: Calculate the Mean and Median of the Salaries
 
