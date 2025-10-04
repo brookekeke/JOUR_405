@@ -1,31 +1,86 @@
 ---
 title: "HW7_MandMs"
+date: 10/1/2025
 ---
+
 
 In this assignment, you'll be picking up where you left off with the M&Ms activity. You'll load the data and perform some basic statistical analysis. Follow the steps below to complete the assignment.
 
 ### Task 1: Load the tidyverse
 
-
-### Task 2: Load the M&Ms dataset from https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/mandms.csv
-
-
-### Task 3: Sample 5 rows of data from the dataset
-
-
-### Task 4: Calculate the mean age and standard deviation of the sample, using either the blue or white number of M&Ms
+```{r}
+library(tidyverse)
+library(dplyr)
+```
 
 
-### Task 5: Calculate the mean age and standard deviation of the population, using the same measure as in Task 4
+### Task 2: Load an M&Ms dataset from https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/mandms.csv
+```{r}
+MandMs <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/mandms.csv")
+
+```
 
 
-### Task 6: Compare the sample and population statistics
+### Task 3: Sample 5 rows of data from the dataset, and then sample 10 rows, saving each to separate dataframes called sample5 and sample10. Be sure to use set.seed(1234) before you start.
+```{r}
 
-Compare the two sets of means and standard deviations. Are they similar?
+sample_5 <-MandMs |> 
+  sample_n(5)
 
-### Task 7: Describe the results
+sample_10 <-MandMs |> 
+  sample_n(10)
 
-Write a few sentences about what you found in the data. What does this tell you about the M&Ms dataset and about the act of random sampling?
+```
+
+
+### Task 4: Calculate the mean, median and standard deviation of red M&Ms from each of the samples.
+```{r}
+
+sample_5 |> summarize(mean = mean(red), median = median(red), sd = sd(red))
+
+```
+
+```{r}
+
+sample_10 |> summarize(mean = mean(red), median = median(red), sd = sd(red))
+
+```
+
+
+### Task 5: Calculate the mean, median and standard deviation of red M&Ms from the population
+
+```{r}
+MandMs |> summarize(mean = mean(total), median = median(total), sd = sd(total))
+
+
+```
+
+### Task 6: Make three histograms: one each for sample5, sample10 and the original dataset. Include a headline. Use a consistent binwidth.
+
+```{r}
+
+
+```
+
+
+### Task 7: Answer questions
+
+
+Compare the three sets of means, standard deviations and histograms. Which are more helpful to you in understanding the accuracy of the samples?
+
+The means and standard deviation show me that the samples are not accurate. The mean of the samples of both 5 and 10 are both around 70, but the mean for he population is over 145. So the actual mean for the population is over double the means from the samples. The standard deviation shows that the standard deviation for the population is much more spread out than the sample sizes. I think the means are more helpful in understanding the accuracy of the samples because they show the more significant difference from the population mean.
+
+What does this exercise tell you about the relationship between sample size and estimate accuracy?
+
+A larger sample size will yield more accurate results. These sample sizes, both very small, hardly reflect the population.
+
+How does random sampling introduce variation into statistical estimates?
+
+With random sampling, you don't know who you're gonna get to be a part of the sample. This causes a great variation in the results, because the data could be very narrow or very spread out.
+
+If you repeated this process, would the samples always be identical? Why or why not?
+
+The samples would not be identical if the process was repeated because the likelihood of the same exact people being chosen a second time through a random sample is close to zero. The next sample would instead be another group of randomly selected individuals. Some people might overlap, but high number of repeats would be incredibly rare depending on the population size.
 
 
 When finished, save your work, switch to GitHub Desktop, then add, commit and push your changes to GitHub and submit the URL of the notebook in ELMS.
