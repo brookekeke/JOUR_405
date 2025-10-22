@@ -1,0 +1,175 @@
+# JOUR405: Statistics for Journalists
+## Makeup Midterm Exam - Fall 2025
+
+Name: Brooke Ensminger
+
+
+# JOUR405: Statistics for Journalists
+## Midterm Exam - Fall 2025
+
+For this exam, you'll analyze several datasets using R and the statistical concepts we've covered in class. Load the tidyverse before beginning, then complete each task. Write your code in the provided blocks and answer the questions in complete sentences.
+
+# Load tidyverse and janitor
+```{r}
+install.packages("tidyverse")
+install.packages("janitor")
+library(tidyverse) 
+library(janitor)
+```
+
+## Part 1: Restaurant Health Inspections (40 points)
+
+The first dataset contains restaurant health inspection scores from New York state. Load the data from: `https://raw.githubusercontent.com/profrobwells/Guest_Lectures/refs/heads/master/new_york_food_inspection_2025.csv`
+
+The dataset includes the name of the facility, the number of points for critical and non-critical violations.
+
+## Task 1: Load the data and clean the column names**
+```{r}
+inspection_scores <- read_csv("https://raw.githubusercontent.com/profrobwells/Guest_Lectures/refs/heads/master/new_york_food_inspection_2025.csv") %>% as.data.frame
+```
+
+
+## Task 2: Calculate the mean and standard deviation maximum and minimum of the total critical violation scores. Put the results in a new dataframe called "compliance_stats." 
+```{r}
+
+compliance_stats <- inspection_scores |> summarise(
+  mean(total_number_critical_violations, na.rm = TRUE),
+  sd(total_number_critical_violations, na.rm = TRUE),
+  min(total_number_critical_violations, na.rm = TRUE),
+  max(total_number_critical_violations, na.rm = TRUE))
+
+```
+
+# Task 3: Write a two sentence summary describing the results from the analysis of New York State restaurant inspections
+
+**Write answer here**: The New York State restaurant inspections rarely yielded critical violations, with a mean around 0.2. Most of the restaurants has similar results, as the standard deviation is low and below 1.
+
+##Task 4: Filter the dataset to just the restaurants with a critical violation. Then group by city and calculate the cities that have restaurants with the most violations
+
+```{r}
+library(dplyr)
+
+critical_by_city <- inspection_scores %>%
+  filter(total_number_critical_violations > 0) %>%
+  group_by(city) %>%
+  summarise(total_critical_violations = sum(total_number_critical_violations, na.rm = TRUE))
+```
+
+## Task 5: Using the "inspections" dataset, create a histogram of the compliance scores with a vertical line showing the mean.  Include a headline and label the x and y axes.
+```{r}
+
+inspection_scores |> 
+  ggplot(aes(x = total_number_critical_violations)) +
+  geom_histogram(binwidth = 1.5, fill = "blue", color = "black") +
+  geom_vline(aes(xintercept = mean(total_number_critical_violations, na.rm = TRUE)), color = "red", linetype = "dashed", size = 1)  +
+  labs(title = "Total Critical Violations in New York Restaurants", x = "Total Critical Violations", y = "Number of Restaurants")
+
+
+```
+
+## Task 6: Write 2-3 sentences interpreting what the standard deviation and histogram tell us about the distribution of compliance scores. What would be newsworthy about this distribution? What's the story here? 
+
+**Write your answer here**: The histogram reveals that most New York restaurants score high on compliance, with only a few performing poorly. The small standard deviation indicates that compliance scores are fairly consistent across establishments—in other words, most restaurants maintain similar health standards rather than showing wide variation in their performance.
+
+
+## Part 2: Public Transit Ridership (40 points)
+
+You are investigating public transit ridership in the Washington, D.C. area and want to understand the patterns of daily bus and rail ridership. The dataset contains daily bus and rail ridership totals from WMATA for the past year. Load the data from https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/wmata_daily.csv and do the following:
+
+# Task 7: Load the data into a dataframe called "transit"
+
+```{r}
+
+transit <- read_csv("https://raw.githubusercontent.com/profrobwells/Guest_Lectures/refs/heads/master/new_york_food_inspection_2025.csv") |> clean_names()
+```
+
+
+
+# Task 8: Calculate the average bus and rail ridership and standard deviation using summarize() 
+```{r}
+transit_total <- transit |>
+summarize(sd_total = sd(total), 
+mean_total = mean(total))
+
+```
+
+```{r}
+
+transit |> 
+summarize(sd_bus = sd(bus), 
+mean_bus = mean(bus))
+```
+
+```{r}
+transit |> 
+summarize(sd_rail = sd(rail), 
+mean_rail = mean(rail))
+
+```
+
+
+# Task 9: Take a random sample daily ridership numbers. The number in the sample is up to you, but explain why you chose what you did. 
+```{r}
+
+sample100 <- transit |>
+  sample_n(100)
+
+```
+
+I chose a sample size of 100 because I think it's a good amount of people out of the population.
+
+# Task 10: Using your random sample, calculate the means and deviations for bus and rail
+```{r}
+
+sample100 |> 
+  summarise(
+    mean_total = mean(total, na.rm = TRUE),
+    sd_total = sd(total, na.rm = TRUE),
+    mean_bus = mean(bus, na.rm = TRUE),
+    sd_bus = sd(bus, na.rm = TRUE),
+    mean_rail = mean(rail, na.rm = TRUE),
+    sd_rail = sd(rail, na.rm = TRUE)
+  )
+
+```
+
+
+# Task 11: Compare your sample to the statistics for the full transit dataset. Write 2-3 sentences here comparing the two. **Write answer here: The means and standard deviations of the total ridership for the actual population and the sample population differed only slightly. The greatest difference is between the rail ridership standard deviation, as the sample size had a much smaller standard deviation than that of the actual population.
+
+
+# Task 12: Using the transit dataset, use group_by() and summarize(), calculate the means for bus and rail ridership for each weekday. 
+
+
+```{r}
+
+weekday_ridership <- transit |> 
+  group_by(weekday) |> 
+  summarise(
+    mean_bus = mean(bus, na.rm = TRUE),
+    mean_rail = mean(rail, na.rm = TRUE)
+  )
+
+```
+
+
+# Task 13: Describe the overall pattern of ridership for bus and rail - which days stand out and why? Are there differences between bus and rail in the standard deviation values? **Write your answer here: Thursday has the highest bus ridership and Tuesday has the highest rail ridership. Sunday has the lowest bus and rail ridership, meaning people are less likely to travel or take public transportation on Sundays. Rail ridership has a much higher standard deviation than bus ridership.
+
+
+# Part 3: Essay Question (20 points)
+
+#Task 14: Data Analysis Scenario. You receive a tip that local emergency response times have gotten significantly worse over the past year. You obtain monthly data on response times for police, fire and ambulance calls.
+
+Write 3-4 sentences (no code!) explaining:
+1. What statistical measures would you calculate to verify this claim? 
+2. What visualizations would help readers understand the trends? 
+3. What additional context or data would you need to make this a complete story? 
+
+**Write your answer here**: To verify this claim, I would measure the median, mean, and stand deviation of the monthly response times and compare how they differ month to month. Visualizations that could help readers undestand the trends would be histograms and scatter plots. I think scatter plots are the most beneficial because they're easy to understand when it's measuring a change over several months (or a long period of time in general. To make this a complete story, I would need to know if the number of calls has changed in any way, which might affect the response time. If they are receiving significantly more calls, it might take them longer to respond. I would also consider if staffing at the locations has changed because that could have an effect on response times.
+
+### Submission Instructions
+- Save your work frequently
+- Make sure all code blocks run without errors
+- Provide clear explanations for your analytical choices
+- Before submitting, clear your environment and run the entire notebook
+
+Good luck!
