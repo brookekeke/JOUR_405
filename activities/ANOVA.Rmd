@@ -1,6 +1,6 @@
 ---
 title: "ANOVA for Journalists: Analyzing College Admissions Test Scores"
-date: 8-22-2025
+date: 11-3-2025
 ---
 
 ```{r setup, include=FALSE}
@@ -60,10 +60,15 @@ admission_summary <- admissions_data |>
 print(admission_summary)
 ```
 
+Context: Fall 2024 midpoint SAT for University of Maryland was 1,465.
+
+
 **Task 3** Describe the data
 
 Write a couple of sentences describing the differences in SAT scores between types of colleges, using the descriptive statistics we just generated.
 
+
+**Task 3: Write your answer here: The average SAT score at a community college is much lower than that at a private or public college. The community college mean is around 300 less than public and private. The standard deviation for community college SAT scores is significantly greater than the others. The minimum score of at the community college was 786.52, which is nearly 500 less than the minimum score of 1244.68 at a private college. The maximum score at community college was 1393.96, in comparison to the maximum scores of 1600 for both private and public colleges.**
 
 
 ## Task 4: Visualize the Data
@@ -108,6 +113,29 @@ summary(anova_result)
 
 The F-value is huge (284.3). The F-value measures the ratio of between-group variance to within-group variance, and this high value suggests the differences between college types far outweigh the variation within each type. The p-value is very low, indicating the differences between college types are statistically significant at any reasonable significance level. The three asterisks (***) highlight that this is significant at the 0.001 level. So we can say that with confidence that there are real differences in SAT scores between the three types of colleges.
 
+How do we know the F-value is huge?
+We can calculate the critical value for an F statistic by using the qf() function in R
+
+```{r}
+# Your ANOVA has:
+# df1 (between groups) = 2
+# df2 (within groups/residuals) = 297
+# Common alpha levels: 0.05, 0.01, 0.001
+
+# Critical values at different significance levels:
+critical_f_05 <- qf(0.95, df1 = 2, df2 = 297)
+critical_f_01 <- qf(0.99, df1 = 2, df2 = 297)
+critical_f_001 <- qf(0.999, df1 = 2, df2 = 297)
+
+cat("Here are the Critical F-values:\n")
+cat("alpha of α = 0.05: ", round(critical_f_05, 3), "\n")
+cat("alpha of α = 0.01: ", round(critical_f_01, 3), "\n")
+cat("alpha ofα = 0.001:", round(critical_f_001, 3), "\n")
+cat("The F-statistic is: 284.3\n")
+cat("Ratio to most extreme critical value (α=0.001) to the F statistic:", round(284.3/critical_f_001, 1), "x\n")
+```
+
+
 ## Task 5: Compare the differences between specific pairs
 
 ```{r post-hoc}
@@ -133,4 +161,26 @@ Based on our analysis, we can now answer:
 3. How large are these differences?
 
 Answer those questions, providing evidence for your answers, and then write a headline and a lead paragraph reporting these findings using active voice and focusing on the differences across types.
+
+
+1. There is a significant difference in SAT scores across colleges because the p-value exceeds the alpha value.
+2. Specifically, community college SAT scores differ the most from private and public colleges.
+3. The average SAT scores at private colleges are 366.96 points higher and at public schools are 292.55 points higher than community colleges. Public and private SAT scores only differ slightly, with private colleges having SAT scores that are 74.4 points higher than public colleges.
+
+Private Colleges Have The Highest SAT Scores
+
+Data shows that students at private colleges have a higher SAT score than students at public colleges, with an average score that is 74.4 points higher.
+
+
+
+
+
+Community Colleges Have Much Lower SAT Scores
+
+Data shows that average SAT scores for private and public colleges around 300 or more points above the average score at a community college.
+
+
+
+
+
 
