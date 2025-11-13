@@ -4,40 +4,49 @@ output: html_document
 date: "2025-11-05"
 ---
 
+**Brooke Ensminger**
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-```{r setup, include=FALSE}
+```{r}
 library(tidyverse)
+library(janitor)
+```
+
+```{r}
+billboard_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQksVWOgEL6ARbAoZeilctkyI95b5vz2oGcsi0vhXd0bj-UImE5U_GTKY0vHHzuOWT5oqryS4s-fhZX/pub?gid=1077686609&single=true&output=csv")
+```
+
+
+mean, median, min, max
+
+
+```{r}
+    billboard_data |> 
+summarize(mean_wh_salaries = mean(salary),
+            median_wh_salaries = median(salary),
+)
 
 ```
 
 ```{r}
-
-car_thefts <- read_csv("LINK")
-
+billboard_data |> 
+  summarize(mean_wh_salaries = mean(salary),
+            median_wh_salaries = median(salary),
+  max_wh_salaries = max(salary),
+            min_wh_salaries = min(salary)
+)
 ```
+
+
+
+
+
+
+
+
 
 
 

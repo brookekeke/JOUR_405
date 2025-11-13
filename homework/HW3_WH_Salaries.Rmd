@@ -10,7 +10,6 @@ You will need to load the tidyverse library
 
 ```{r}
 library(tidyverse)
-install.packages("janitor")
 library(janitor)
 ```
 
