@@ -6,49 +6,132 @@ date: "2025-11-05"
 
 **Brooke Ensminger**
 
+NULL HYPOTHESIS: Most hits were not written by the artist
+ALTERNATIVE HYPOTHESIS: More than 50% of top hits were written by the artist 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+### LOAD THE TIDYVERSE
 
 ```{r}
 library(tidyverse)
 library(janitor)
 ```
+### LOAD THE DATA
 
 ```{r}
 billboard_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQksVWOgEL6ARbAoZeilctkyI95b5vz2oGcsi0vhXd0bj-UImE5U_GTKY0vHHzuOWT5oqryS4s-fhZX/pub?gid=1077686609&single=true&output=csv")
 ```
 
-
-mean, median, min, max
+### DESCRIPTIVE STATISTICS: Find the mean, median, min, and max
 
 
 ```{r}
-    billboard_data |> 
-summarize(mean_wh_salaries = mean(salary),
-            median_wh_salaries = median(salary),
-)
+billboard_data |>
+  summarize(
+    mean_artist_is_a_songwriter = mean(`Artist is a Songwriter`, na.rm = TRUE),
+    median_artist_is_a_songwriter = median(`Artist is a Songwriter`, na.rm = TRUE),
+    min_artist_is_a_songwriter = min(`Artist is a Songwriter`, na.rm = TRUE),
+    max_artist_is_a_songwriter = max(`Artist is a Songwriter`, na.rm = TRUE)
+  )
+```
+
+**This data shows that the artist is a songwriter 65% of the time a song is at #1.**
+
+```{r}
+billboard_data |>
+  group_by(`Artist is a Songwriter`) |>
+  summarize(
+    mean_weeks_at_number_1 = mean(`Weeks at Number One`, na.rm = TRUE),
+    median_weeks_at_number_1 = median(`Weeks at Number One`, na.rm = TRUE),
+    min_weeks_at_number_1 = min(`Weeks at Number One`, na.rm = TRUE),
+    max_weeks_at_number_1 = max(`Weeks at Number One`, na.rm = TRUE)
+  )
+```
+
+
+**After comparing the 'Artist is a Songwriter' column to the 'Weeks at Number One' column, you can see that a song with a singer-songwriter is at #1 for around 3.14 weeks. Songs without singer-songwriters are at the #1 spot on average for 2.55 weeks. The median and minimum are the same for both categories, however a pretty significant difference comes with the maximum values. Songs with a singer-songwriter are at #1 for a maximum of 19 weeks, while songs without only reach 16 weeks. Just by looking at the mean and max number of weeks at #1, I can already notice a difference that supports my alternative hypothesis.**
+
+
+NULL HYPOTHESIS: Most billboard #1 hits were not written by the artist
+ALTERNATIVE HYPOTHESIS: More than 50% of #1 hits were written by the artist 
+
+A big topic of debate in the music industry revolves around songwriting and whether singers are more successful when they write their own hits versus when they rely on others. Do artist-written songs lead the charts, staying at #1 longer? This has always been a fascinating topic to me, so I knew I wanted to use this data to investigate this question. If time permits, I'm interested in learning if certain genres produce more singer-songwriter #1 hits. It would also be beneficial to look at how the number of singer-songwriter hits has changed over time. Did hit artists more frequently write their own songs in the 70s and 80s or has that been more common in recent years? 
+
+**What does it contain and what time period does it cover?** 
+This data set includes information on billboard hits and different elements of those songs, like the artist's name, the label and genre of song. Every song included in the data spent at least one week at the #1 billboard spot.  The data spans from August of 1958 to January of 2025.
+**Which columns will be most important for your analysis?** 
+The 'Weeks at Number One' and 'Artist is a Songwriter' columns will be the most important for my analysis. I will use the 'Weeks at Number One' column to draw a conclusion about whether a singer being a songwriter has any influence on whether the song is a hit. If songs written by the singers are at #1 more weeks than those without a singer-songwriter, then that means it does have an impact.
+**What's missing that you might need or want?** 
+I might want to know is an artist had previously written songs. If so, were those songs successful? Do they typically write their own music or perform music written by others? Were their written songs more successful than the songs that were written for them?
+
+
+### DESCRIPTIVE STATISTICS: Find the percentage of weeks a song written by the artist is at #1
+
+```{r}
+
+billboard_data |>
+  group_by(`Weeks at Number One`) |>
+  summarize(
+    pct_artist_is_a_songwriter = mean(`Artist is a Songwriter`, na.rm = TRUE) * 100
+  )
+
+```
+
+**I can see that in every number of weeks a song is at #1, except 13 weeks, there is a greater percentage they were written by the artist. At 13 weeks, there is a 50% chance that the artist wrote or didn't write the song. There is not a single week that has a greater percentage of songs not written by the singer than songs written by the singer. However, since most of the songs stay at the 2 week range, since the median is 2, that row carries the greatest impact on the results.**
+
+```{r}
+
+billboard_data |>
+  summarize(
+    pct_songwriter_at_number_one = mean(
+      `Artist is a Songwriter` == 1 & `Weeks at Number One` > 0,
+      na.rm = TRUE
+    ) * 100
+  )
 
 ```
 
 ```{r}
-billboard_data |> 
-  summarize(mean_wh_salaries = mean(salary),
-            median_wh_salaries = median(salary),
-  max_wh_salaries = max(salary),
-            min_wh_salaries = min(salary)
-)
+
+ggplot(billboard_data, aes(
+  x = factor(`Artist is a Songwriter`),
+  y = `Weeks at Number One`,
+  fill = factor(`Artist is a Songwriter`)
+)) +
+  geom_boxplot() +
+  labs(
+    x = "Artist is the Songwriter (0 = No, 1 = Yes)",
+    y = "Weeks at #1",
+    title = "Distribution of Songs at #1 Written by the Performing Artists"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
 ```
 
+```{r}
 
+billboard_data |>
+  group_by(`Artist is a Songwriter`) |>
+  summarize(
+    mean_weeks = mean(`Weeks at Number One`, na.rm = TRUE)
+  ) |>
+  ggplot(aes(x = factor(`Artist is a Songwriter`), 
+             y = mean_weeks,
+             fill = factor(`Artist is a Songwriter`))) +
+  geom_col() +
+  labs(
+    x = "Artist is the Songwriter (0 = No, 1 = Yes)",
+    y = "Mean Weeks at #1",
+    title = "Artist-Written Songs Stay at #1 Longer on Average"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
 
-
-
-
-
-
-
-
+```
 
 
 
