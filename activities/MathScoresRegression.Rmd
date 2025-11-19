@@ -92,3 +92,5 @@ The schools with the biggest positive residuals are performing better than expec
 A school board member has said at a meeting that elementary schools with fewer students on free and reduced price meals do better on standardized math tests. Describe what conclusions you'd draw from this model's results and how it would influence a story pitch about the school board member and math scores.
 
 **The model's results do not support the school board member's claim. There is no statistically significant relationship between FARMS and test scores. Some schools with less FARMS program score much lower than predicted while some schools with full FARMS programs score high above what the predictions. There could be other factors influencing the test scores.**
+
+**LEDE: Free And Reduced Priced Meals have little affect on standardized math test scores, despite school board member's claims. The results of a data alaysis suggests that there may be other outside factors influencing the scores instead.**
