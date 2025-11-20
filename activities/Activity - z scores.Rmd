@@ -84,7 +84,7 @@ summary(daily_calls$call_count)
 
 Let's visualize the time series of daily calls. What patterns do you see? 
 
-**Daily calls peak in October and decrease in the time after before heightening again in January.**
+**Daily calls peak in October and decrease in the time after before heightening again in January. There are some fairly significant increases and decreases from April 2022 to January 2023. These numbers deviate from the more common values and could indicate a higher z-score for those specific times.**
 
 ```{r daily-calls-plot}
 # Plot daily call volume
@@ -145,7 +145,7 @@ unusual_days |>
 
 Let's visualize these unusual days in the context of the full dataset. How do they differ from your answer on Task 3?
 
-**The unusual days are outliers, eiher dramatically higher or lower than the normal days. I only talked about the unusually high scores in Task 3, disregarding the unusually low scores.**
+**The unusual days are outliers, either dramatically higher or lower than the normal days. Unusually high days are fairly rare and stand far above the pattern. The unusually low days aren't as far from the pattern. Compared to my answer on Task 3, this new plot shows that not every dramatic increase/decrease is statistically significant. Many of the points in Task 3 appear to be high, but this new plot shows only a few that are actually red and significant. Additionally, I only talked about the unusually high scores in Task 3, disregarding the unusually low scores.**
 
 ```{r plot-unusual-days}
 # Create a clean factor for the plot legend
@@ -306,4 +306,4 @@ top_outliers
 
 Based on our z-score analysis, what are some potential angles for reporting? What would your next steps be and what would you tell an editor about your findings?
 
-***Tuesdays have significantly more daily calls on average, with the greatest standard deviation from the mean. I would research is any particular events/activities happen on Tuesdays that could influence this high number of calls.**
+***Tuesdays have significantly more daily calls on average, with the greatest standard deviation from the mean. I would research is any particular events/activities happen on those days that could influence this high number of calls.**
