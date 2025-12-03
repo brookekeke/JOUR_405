@@ -1,6 +1,6 @@
 ---
 title: "Multiple Regression Analysis: Maryland Voter Turnout"
-name: "YOUR NAME HERE"
+name: "BROOKE ENSMINGER"
 date: 8-24-2025
 ---
 

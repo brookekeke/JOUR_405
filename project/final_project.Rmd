@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(janitor)
 library(dplyr)
+library(ggplot2)
 ```
 
 
@@ -243,7 +244,81 @@ ggplot(billboard_data, aes(x = songwriter_category, y = `Weeks at Number One`, f
 **This box plot compares the three categories of songs I'm analyzing: 'Artist is a Co-Writer,' Artist is Not a Songwriter' and 'Artist is Only Songwriter.' The box plot show that songs with an artist co-writer stay at #1 the longest. This category has the highest median and maximum. Songs written solely by the artist and songs not written by the artist are very similar, with close medians and ranges. This shows that co-written songs tend to perform better on the billboard charts and, combined with songs solely written by the artist, supports the alternative hypothesis that songs written by the artist perform better overall.**
 
 
+## 
 
+```{r}
+
+# 
+billboard_data |>
+  group_by(`Artist is a Songwriter`) |>
+  summarize(
+    mean_weeks = mean(`Weeks at Number One`, na.rm = TRUE),
+    se = sd(`Weeks at Number One`, na.rm = TRUE) / sqrt(n())
+  ) |>
+  ggplot(aes(x = factor(`Artist is a Songwriter`), y = mean_weeks)) +
+  geom_point(size = 4) +
+  geom_errorbar(aes(ymin = mean_weeks - 2 * se,
+                    ymax = mean_weeks + 2 * se),
+                width = 0.2) +
+  labs(
+    title = "Mean Weeks at #1 by Artist Songwriter Status",
+    x = "Artist is a Songwriter",
+    y = "Mean Weeks at Number One"
+  ) +
+  theme_minimal()
+
+```
+
+```{r}
+summary(lm(`Weeks at Number One` ~ `Artist is a Songwriter`, data = billboard_data))
+
+```
+
+```{r}
+billboard_data <- billboard_data %>%
+  mutate(artist_is_songwriter = factor(`Artist is a Songwriter`, levels = c(0,1),
+                                       labels = c("No","Yes")))
+
+# check counts/summary
+table(billboard_data$artist_is_songwriter, useNA = "ifany")
+summary(billboard_data$`Weeks at Number One`)
+```
+
+```{r}
+billboard_data %>%
+  ggplot(aes(x = artist_is_songwriter, y = `Weeks at Number One`)) +
+  geom_violin(trim = TRUE, alpha = 0.2) +
+  geom_boxplot(width = 0.12, outlier.shape = NA) +          # box inside violin
+  geom_jitter(width = 0.12, height = 0, alpha = 0.5, size = 1) +
+  stat_summary(fun = mean, geom = "point", size = 3, color = "black") +
+  stat_summary(fun.data = mean_cl_normal, geom = "errorbar", width = 0.1) +
+  labs(title = "Weeks at #1 by Artist Songwriter Status",
+       x = "Artist is Songwriter",
+       y = "Weeks at Number One") +
+  theme_minimal()
+```
+
+```{r}
+ggplot(billboard_data, aes(x = artist_is_songwriter, y = `Weeks at Number One`)) +
+  geom_boxplot(fill = "#A6CEE3") +
+  geom_jitter(width = 0.12, alpha = 0.4, size = 1) +
+  labs(title = "Weeks at #1 by Artist Songwriter Status",
+       x = "Artist is Songwriter",
+       y = "Weeks at Number One") +
+  theme_minimal()
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
 
 NULL HYPOTHESIS: 50% or fewer billboard #1 hits were written by the artist
 ALTERNATIVE HYPOTHESIS: More than 50% of #1 hits were written by the artist 
@@ -256,5 +331,9 @@ This data set includes information on billboard hits and different elements of t
 The 'Weeks at Number One' and 'Artist is a Songwriter' columns will be the most important for my analysis. I will use the 'Weeks at Number One' column to draw a conclusion about whether a singer being a songwriter has any influence on whether the song is a hit. If songs written by the singers are at #1 more weeks than those without a singer-songwriter, then that means it does have an impact.
 **What's missing that you might need or want?** 
 I might want to know is an artist had previously written songs. If so, were those songs successful? Do they typically write their own music or perform music written by others? Were their written songs more successful than the songs that were written for them?
+
+## Draft a story pitch
+Your notebook must include a final section where you draft a story pitch, backed by your analysis. It needs to discuss your main findings, potential problems, and provide a reporting plan - 25 points
+
 
 
