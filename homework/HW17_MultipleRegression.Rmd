@@ -144,4 +144,4 @@ ggplot(model_comparison, aes(x = reorder(Model, Adjusted_R_squared), y = Adjuste
 
 Without using the words "multiple regression model", describe how you could use this analysis to cover an election or voter participation story.
 
-**I could use it in an election story to explain how things like income or education relate to turnout and which areas are more involved. It also shows where turnout is lower and where outreach might be needed. Overall, it helps turn the data into a clear story about who is voting and why.**
+**I could use it in an election story to explain how things like income or education relate to turnout and which areas are more involved. It also shows where turnout is lower and where outreach might be needed. Overall, it helps turn the data into a clear story about\ who is voting and why.**
