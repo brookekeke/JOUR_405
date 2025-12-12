@@ -103,9 +103,7 @@ billboard_data |>
   )
 
 ```
-reject null
-
-
+**This shows that around 65.5% of songs at #1 were written by the performing artist. Therefore, it rehects the null hypothesis, since it proves that more than 50% of hits were written by the artist.**
 
 
 ## BOX PLOT demonstrating difference in mean, median and outliers.
@@ -193,7 +191,7 @@ billboard_data <- billboard_data |>
 table(billboard_data$songwriter_category)
 
 ```
-**In addition to looking at how many #1 songs were written by the artist, I wanted to explore whether songs written by the artist were individually or co-written. I found that a larger number of songs, 453, were co-written, compared to 318 that were written solely by the artist. This suggests that even when the performing artist contributes to songwriting, it's common for there to be collaboration from other writers, which may influence the song’s success on the charts. Being the sole songwriter doesn’t significantly change chart performance compared to songs not written by the artist. The mean weeks a song co-written by the artist is at #1 is significantly higher than both Only Artist and Not Artist songs. Co-writing might lead to more success and a greater number of weeks at #1. The average number of weeks a song not written by the artist is at #1 is similar to the number of weeks of a song soley written by the artist. However, it is much lower than co-written songs.**
+**In addition to looking at how many #1 songs were written by the artist, I wanted to explore whether songs written by the artist were individually or co-written. I found that a larger number of songs, 453, were co-written, compared to 318 that were written solely by the artist. This suggests that even when the performing artist contributes to songwriting, it's common for there to be collaboration from other writers, which may influence the song’s success on the charts. Being the sole songwriter doesn’t significantly change chart performance compared to songs not written by the artist. The mean weeks a song co-written by the artist is at #1 is significantly higher than both Only Artist and Not Artist songs. Co-writing might lead to more success and a greater number of weeks at #1. The average number of weeks a song not written by the artist is at #1 is similar to the number of weeks of a song soley written by the artist. However, it is much lower than co-written songs. Given this information, it rejects the null hypothesis since fewer Billboard #1 hits were written by artists who were the sole songwriter rather than a co-writer.**
 
 
 ## ANOVA TEST
