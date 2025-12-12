@@ -28,6 +28,15 @@ library(ggplot2)
 billboard_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQksVWOgEL6ARbAoZeilctkyI95b5vz2oGcsi0vhXd0bj-UImE5U_GTKY0vHHzuOWT5oqryS4s-fhZX/pub?gid=1077686609&single=true&output=csv")
 ```
 
+A big topic of debate in the music industry revolves around songwriting and whether singers are more successful when they write their own hits versus when they rely on others. Do artist-written songs lead the charts, staying at #1 longer? This has always been a fascinating topic to me, so I knew I wanted to use this data to investigate this question. If time permits, I'm interested in learning if certain genres produce more singer-songwriter #1 hits. It would also be beneficial to look at how the number of singer-songwriter hits has changed over time. Did hit artists more frequently write their own songs in the 70s and 80s or has that been more common in recent years? 
+
+**What does it contain and what time period does it cover?** 
+This data set includes information on billboard hits and different elements of those songs, like the artist's name, the label and genre of song. Every song included in the data spent at least one week at the #1 billboard spot.  The data spans from August of 1958 to January of 2025.
+**Which columns will be most important for your analysis?** 
+The 'Weeks at Number One' and 'Artist is a Songwriter' columns will be the most important for my analysis. I will use the 'Weeks at Number One' column to draw a conclusion about whether a singer being a songwriter has any influence on whether the song is a hit. If songs written by the singers are at #1 more weeks than those without a singer-songwriter, then that means it does have an impact.
+**What's missing that you might need or want?** 
+I might want to know if an artist had previously written songs. If so, were those songs successful? Do they typically write their own music or perform music written by others? Were their written songs more successful than the songs that were written for them?
+
 
 ### DESCRIPTIVE STATISTICS: Find the mean, median, min, and max for songs where 'Artist is a Songwriter'
 
@@ -77,6 +86,9 @@ billboard_data |>
 
 **I can see that in every number of weeks a song is at #1, except 13 weeks, there is a greater percentage they were written by the artist. At 13 weeks, there is a 50% chance that the artist wrote or didn't write the song. There is not a single week that has a greater percentage of songs not written by the singer than songs written by the singer. However, since most of the songs stay at the 2 week range, since the median is 2, that row carries the greatest impact on the results.**
 
+NULL HYPOTHESIS: 50% or fewer billboard #1 hits were written by the artist
+ALTERNATIVE HYPOTHESIS: More than 50% of #1 hits were written by the artist
+
 
 ## Find the percentage of total weeks a song is at #1.
 
@@ -91,6 +103,9 @@ billboard_data |>
   )
 
 ```
+reject null
+
+
 
 
 ## BOX PLOT demonstrating difference in mean, median and outliers.
@@ -152,6 +167,9 @@ t.test(`Weeks at Number One` ~ `Artist is a Songwriter`,
 ```
 **This t-test indicates that hit songs written by the artist stay at #1 longer than those not written by the song's performing artist. Songs written by the artist were at #1 for a mean of 3.14 weeks, compared to 2.55 weeks for songs not written by the artist. The p-value, being less than 0.001, shows that the difference in mean weeks at #1 between artist-written and non-artist-written songs is statistically significant. This means it is very unlikely that the difference only happened by chance. The 95% confidence interval ranging from -infinity to -0.34 shows that artist-written songs consistently perform better at #1 than non-artist-written songs.**
 
+
+NULL HYPOTHESIS: More Billboard #1 hits were written by artists who were the sole songwriter
+ALTERNATIVE HYPOTHESIS: Fewer Billboard #1 hits were written by artists who were the sole songwriter
 
 #### ANOVA TEST
 
@@ -244,96 +262,47 @@ ggplot(billboard_data, aes(x = songwriter_category, y = `Weeks at Number One`, f
 **This box plot compares the three categories of songs I'm analyzing: 'Artist is a Co-Writer,' Artist is Not a Songwriter' and 'Artist is Only Songwriter.' The box plot show that songs with an artist co-writer stay at #1 the longest. This category has the highest median and maximum. Songs written solely by the artist and songs not written by the artist are very similar, with close medians and ranges. This shows that co-written songs tend to perform better on the billboard charts and, combined with songs solely written by the artist, supports the alternative hypothesis that songs written by the artist perform better overall.**
 
 
-## 
-
-```{r}
-
-# 
-billboard_data |>
-  group_by(`Artist is a Songwriter`) |>
-  summarize(
-    mean_weeks = mean(`Weeks at Number One`, na.rm = TRUE),
-    se = sd(`Weeks at Number One`, na.rm = TRUE) / sqrt(n())
-  ) |>
-  ggplot(aes(x = factor(`Artist is a Songwriter`), y = mean_weeks)) +
-  geom_point(size = 4) +
-  geom_errorbar(aes(ymin = mean_weeks - 2 * se,
-                    ymax = mean_weeks + 2 * se),
-                width = 0.2) +
-  labs(
-    title = "Mean Weeks at #1 by Artist Songwriter Status",
-    x = "Artist is a Songwriter",
-    y = "Mean Weeks at Number One"
-  ) +
-  theme_minimal()
-
-```
-
-```{r}
-summary(lm(`Weeks at Number One` ~ `Artist is a Songwriter`, data = billboard_data))
-
-```
-
-```{r}
-billboard_data <- billboard_data %>%
-  mutate(artist_is_songwriter = factor(`Artist is a Songwriter`, levels = c(0,1),
-                                       labels = c("No","Yes")))
-
-# check counts/summary
-table(billboard_data$artist_is_songwriter, useNA = "ifany")
-summary(billboard_data$`Weeks at Number One`)
-```
-
-```{r}
-billboard_data %>%
-  ggplot(aes(x = artist_is_songwriter, y = `Weeks at Number One`)) +
-  geom_violin(trim = TRUE, alpha = 0.2) +
-  geom_boxplot(width = 0.12, outlier.shape = NA) +          # box inside violin
-  geom_jitter(width = 0.12, height = 0, alpha = 0.5, size = 1) +
-  stat_summary(fun = mean, geom = "point", size = 3, color = "black") +
-  stat_summary(fun.data = mean_cl_normal, geom = "errorbar", width = 0.1) +
-  labs(title = "Weeks at #1 by Artist Songwriter Status",
-       x = "Artist is Songwriter",
-       y = "Weeks at Number One") +
-  theme_minimal()
-```
-
-```{r}
-ggplot(billboard_data, aes(x = artist_is_songwriter, y = `Weeks at Number One`)) +
-  geom_boxplot(fill = "#A6CEE3") +
-  geom_jitter(width = 0.12, alpha = 0.4, size = 1) +
-  labs(title = "Weeks at #1 by Artist Songwriter Status",
-       x = "Artist is Songwriter",
-       y = "Weeks at Number One") +
-  theme_minimal()
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
 
 NULL HYPOTHESIS: 50% or fewer billboard #1 hits were written by the artist
-ALTERNATIVE HYPOTHESIS: More than 50% of #1 hits were written by the artist 
+ALTERNATIVE HYPOTHESIS: More than 50% of #1 hits were written by the artist
 
-A big topic of debate in the music industry revolves around songwriting and whether singers are more successful when they write their own hits versus when they rely on others. Do artist-written songs lead the charts, staying at #1 longer? This has always been a fascinating topic to me, so I knew I wanted to use this data to investigate this question. If time permits, I'm interested in learning if certain genres produce more singer-songwriter #1 hits. It would also be beneficial to look at how the number of singer-songwriter hits has changed over time. Did hit artists more frequently write their own songs in the 70s and 80s or has that been more common in recent years? 
+NULL HYPOTHESIS: More Billboard #1 hits were written by artists who were the sole songwriter
+ALTERNATIVE HYPOTHESIS: Fewer Billboard #1 hits were written by artists who were the sole songwriter
 
-**What does it contain and what time period does it cover?** 
-This data set includes information on billboard hits and different elements of those songs, like the artist's name, the label and genre of song. Every song included in the data spent at least one week at the #1 billboard spot.  The data spans from August of 1958 to January of 2025.
-**Which columns will be most important for your analysis?** 
-The 'Weeks at Number One' and 'Artist is a Songwriter' columns will be the most important for my analysis. I will use the 'Weeks at Number One' column to draw a conclusion about whether a singer being a songwriter has any influence on whether the song is a hit. If songs written by the singers are at #1 more weeks than those without a singer-songwriter, then that means it does have an impact.
-**What's missing that you might need or want?** 
-I might want to know is an artist had previously written songs. If so, were those songs successful? Do they typically write their own music or perform music written by others? Were their written songs more successful than the songs that were written for them?
 
 ## Draft a story pitch
-Your notebook must include a final section where you draft a story pitch, backed by your analysis. It needs to discuss your main findings, potential problems, and provide a reporting plan - 25 points
 
-Artists are more likely to stay at the top the charts if they write their own songs
+## LEDE
+Artists who write their own songs are more likely to land at the top of the Billboard charts. Over 65% of #1 hits from 1958 to the beginning of 2025 were written by the artists themselves, contradicting the notion in the music industry that hit songs are mostly written by outside songwriters.
+
+## MAIN FINDINGS
+My analysis shows that songs stay at #1 longer when the performing artist is a part of the songwriting process. On average, in the years from August 1958 to January 2025, around 65.5% of the songs at #1 were written by the artist. This rejects the null hypothesis, since greater than 50% of Billboard #1 hits were written by the performing artist. However, the level of involvement in that process can introduce another area of analysis. Songs that are co-written by the artist and one or multiple other songwriters have more longevity on the charts according to the ANOVA and t-tests. The HSD tests reveal that songs where the artist is not a songwriter stay at #1 for nearly a full week less than songs where the artist is a co-writer. Songs written solely by the artist also stay at #1 for about 0.9 fewer weeks than co-written songs.
+
+There is no statistical significance between songs written only by the artist and songs not written by the artist. This might suggest that being the sole songwriter doesn’t lead to chart-topping success, while songwriting collaboration does.
+
+By grouping together songs where the artist is the only writer and songs where the artist is a co-writer, it shows that artist-written songs in general perform significantly better than songs not written by their performing artists. This supports the alternative hypothesis: songs tend to stay at #1 longer when the performing artist has some level of writing involvement or more than 50% of #1 hits were written by the artist.
+
+My analysis shows that songs not written by the artist stayed at #1 for an average of 2.55 weeks, with a median of two weeks and a maximum of 16 weeks. Songs written by the artist stayed at #1 for an average of 3.14 weeks, with the same median of two weeks, but a maximum of 19 weeks. The medians indicate that songs typically stayed at #1 for two weeks, regardless of who wrote them.
+
+The distribution of songwriting categories shows that 453 #1 hits were co-written by the artist, 406 were not written by the artist, and 318 were written solely by the artist. Co-written songs stayed at #1 significantly longer than songs solely written or not written by the artist.
+
+
+## POTENTIAL PROBLEMS
+This data only includes songs that reach #1, rather than all songs released. Therefore, I cannot compare this data with the percentage of songs released that fall under each of these categories. I'd like to find out if the majority of released songs are written or not written by the performing artists. This could provide a fuller picture by showing whether artist-written songs top the charts because they’re more common in general or because they outperform other songs.
+
+Some artists listed as co-writers may have had very different levels of involvement in the songwriting process. It’s impossible to know exactly how much each performing artist contributed. For example, one artist might have written only a single line but still received songwriting credit, while another might have written nearly the entire song, with additional names added for minor contributions.
+
+There are other factors outside of songwriting that could have an influence on chart success. These could include genres of music, current trends, and an artist's fan base, among many others. As a result, even well-written songs could underperform without these factors.
+
+
+## REPORTING PLAN
+1) I would first interview singer-songwriters, songwriters who write for performers and producers about why co-writing might lead to chart success.
+2) Then, I would research successful artists who wrote their own music as well as artists who never did. I would also look into artists who have released both songs that they have written and have not written. I would like to find out what influences them to write their own material or work with others to create a song.
+3) I would also find out which genres have the most songwriting collaborations and whether that contributes to the success of that genre at the top of the charts. I would also research how songwriting has influenced success over time. Was there a period of time when co-writing didn't yield the most success? Has singer-songwriting always been common since the late 50s?
+4) Finally, I would look at songs that were outliers to my data. These could include songs that were not written by the artist but had a long run at #1, as well as songs written by the artists that underperformed.
+
+
+
+
+
 
